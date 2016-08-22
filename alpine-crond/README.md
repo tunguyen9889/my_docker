@@ -20,3 +20,4 @@ $ docker run -d -it --name my-cron-container -e PACKTEMAIL=<packtpub_email> -e P
 ```
 $ docker exec -it my-cron-container run-parts --test /etc/periodic/daily
 ```
+[![](https://images.microbadger.com/badges/image/vitamingaugau/alpine.svg)](http://microbadger.com/images/vitamingaugau/alpine "Get your own image badge on microbadger.com") [![](https://images.microbadger.com/badges/version/vitamingaugau/alpine.svg)](http://microbadger.com/images/vitamingaugau/alpine "Get your own version badge on microbadger.com")
