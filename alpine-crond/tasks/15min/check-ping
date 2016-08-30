@@ -1,0 +1,13 @@
+#!/bin/sh
+HOSTS="${S3_HOST}"
+COUNT=4
+WEBHOOKURL="${S3_SLACKHOOK}"
+for myHost in $HOSTS
+do
+  count=$(ping -c $COUNT $myHost | grep 'received' | awk -F',' '{ print $2 }' | awk '{ print $1 }')
+  if [ $count -eq 0 ]; then
+    # 100% failed
+    : "${MESSAGE:=Host: *$myHost* is down (ping failed) at $(date)}"
+    curl -k -fsSL -X POST --data-urlencode 'payload={"username": "PingBot", "text": "'"$MESSAGE"'", "icon_emoji": ":ghost:"}' ${WEBHOOKURL}
+  fi
+done

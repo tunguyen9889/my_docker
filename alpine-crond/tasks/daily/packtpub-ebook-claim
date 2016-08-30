@@ -24,7 +24,7 @@ curl -k -fsSL -b ${COOKIE} -H 'Accept: text/html,application/xhtml+xml,applicati
 BOOK=$(echo ${CLAIM} | sed 's/.*\/\([0-9]*\)\/.*/\1/')
 
 # Send message to Slack
-WEBHOOKURL="${SLACKHOOK}"
+WEBHOOKURL="${MY_SLACKHOOK}"
 : "${MESSAGE:=eBook of the day: *$TITLE*.\nDownload link <https://www.packtpub.com/ebook_download/$BOOK/pdf | here>!}"
 curl -k -fsSL -X POST --data-urlencode 'payload={"username": "PacktpubBot", "text": "'"$MESSAGE"'", "icon_emoji": ":ghost:"}' ${WEBHOOKURL}
 
