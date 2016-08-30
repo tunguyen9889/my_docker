@@ -7,7 +7,7 @@ do
   count=$(ping -c $COUNT $myHost | grep 'received' | awk -F',' '{ print $2 }' | awk '{ print $1 }')
   if [ $count -eq 0 ]; then
     # 100% failed
-    : "${MESSAGE:=Host: *$myHost* is down (ping failed) at $(date)}"
+    : "${MESSAGE:=<!group> Host: *$myHost* is down (ping failed) at $(date)}"
     curl -k -fsSL -X POST --data-urlencode 'payload={"username": "PingBot", "text": "'"$MESSAGE"'", "icon_emoji": ":ghost:"}' ${WEBHOOKURL}
   fi
 done
