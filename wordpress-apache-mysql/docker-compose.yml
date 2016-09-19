@@ -6,10 +6,10 @@ db:
   tty: true
   stdin_open: true
   environment:
-    MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-    MYSQL_DATABASE: wordpress
-    MYSQL_USER: wordpress
-    MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    MYSQL_ROOT_PASSWORD:
+    MYSQL_DATABASE:
+    MYSQL_USER:
+    MYSQL_PASSWORD:
 
 wordpress:
   image: wordpress
@@ -21,5 +21,5 @@ wordpress:
   tty: true
   stdin_open: true
   environment:
-    WORDPRESS_DB_HOST: db.wordpress:3306
-    WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD}
+    WORDPRESS_DB_HOST: db:3306
+    WORDPRESS_DB_PASSWORD:
