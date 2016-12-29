@@ -1,0 +1,32 @@
+FROM python:2.7
+MAINTAINER anhtu@siliconstraits.com
+
+ENV APP_HOME /usr/src/app
+WORKDIR $APP_HOME
+
+RUN \
+  apt-get clean && apt-get update -y \
+  && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y --force-yes cron curl \
+    wget openjdk-7-jdk bison flex python-setuptools python-dev autoconf \
+    libtool zlib1g-dev texinfo help2man gawk g++ curl texlive cmake subversion \
+  && apt-get clean autoclean \
+  && apt-get autoremove -y \
+  && rm -rf /var/lib/{apt,dpkg,cache,log}/
+RUN \
+  mkdir -p $APP_HOME/or-tools \
+  && wget -qO- https://github.com/google/or-tools/releases/download/v5.0/or-tools_python_examples_v5.0.3919.tar.gz \
+  | tar xz -C $APP_HOME/or-tools --strip-components 1 \
+  && cd $APP_HOME/or-tools \
+  && python setup.py install --user
+
+ADD server.py $APP_HOME/
+ADD requirements.txt $APP_HOME/
+
+RUN \
+  pip install -r $APP_HOME/requirements.txt
+
+EXPOSE 5000
+ENV FLASK_APP $APP_HOME/server.py
+
+CMD ["flask", "run", "--host=0.0.0.0"]
+

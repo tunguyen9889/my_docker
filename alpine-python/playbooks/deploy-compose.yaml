@@ -1,0 +1,20 @@
+
+---
+- hosts: all
+  become: true
+  become_method: sudo
+  tasks:
+   - name: login to registry with 5 min build token
+     shell: docker login -u {{ USER }} -p {{ PASSWORD }} {{ REGISTRY }}
+   - name: copy compose file to deploy target
+     copy:
+       src: ../docker-compose.yaml
+       dest: /tmp/docker-compose.yaml
+   - name: AlwaysPull images
+     shell: docker-compose -f /tmp/docker-compose.yaml pull
+   - name: stand up stack on server
+     shell: docker-compose -p vrp -f /tmp/docker-compose.yaml up -d
+   - name: remove temp compose file
+     file:
+       path: /tmp/docker-compose.yaml
+       state: absent

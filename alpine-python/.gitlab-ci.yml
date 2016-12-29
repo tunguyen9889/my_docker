@@ -1,0 +1,61 @@
+image: so0k/docker-ansible:1.12.3-alpine
+
+services:
+- docker:dind
+
+variables:
+  DOCKER_DRIVER: overlay
+  IMMUTABLE_TAG: $CI_REGISTRY_IMAGE:$CI_BUILD_REF_NAME
+  MUTABLE_TAG: $CI_REGISTRY_IMAGE:latest
+  
+before_script:
+- docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+
+stages:
+- build
+- release
+- deploy
+- grading
+
+build:
+  stage: build
+  script:
+    - docker build -t $IMMUTABLE_TAG .
+    - docker push $IMMUTABLE_TAG
+
+release-image:
+  stage: release
+  script:
+    - docker pull $IMMUTABLE_TAG
+    - docker tag $IMMUTABLE_TAG $MUTABLE_TAG
+    - docker push $MUTABLE_TAG
+  only:
+    - master 
+
+ansible-deploy:
+  stage: deploy
+  script:
+    # Add the SSH key from SSH_PRIVATE_KEY variable
+    - mkdir -p ~/.ssh && chmod 700 ~/.ssh
+    - echo "${SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    # disable strict host checking - beware MitM! :(
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+    - ssh -i ~/.ssh/id_rsa ubuntu@$DEPLOY_TARGET sudo docker version
+    # add $DEPLOY_TARGET to ansible inventory
+    - echo -e
+      "${DEPLOY_TARGET}\tansible_connection=ssh\tansible_user=ubuntu" > inventory
+    - ansible-playbook -vv
+      --key-file ~/.ssh/id_rsa
+      --inventory-file inventory
+      -e "USER=gitlab-ci-token"
+      -e "PASSWORD=$CI_BUILD_TOKEN"
+      -e "REGISTRY=$CI_REGISTRY"
+      playbooks/deploy-compose.yaml
+  only:
+    - master
+
+scoreme:
+  stage: grading
+  script:
+    - ./scripts/grademe.sh
