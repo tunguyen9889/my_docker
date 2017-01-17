@@ -1,0 +1,25 @@
+version: '2'
+
+services:
+  rethinkdb:
+    container_name: rethinkdb
+    image: rethinkdb:2.3.4
+    ports:
+      - "8082:8080"
+      - "28015:28015"
+      - "29015:29015"
+
+  horizon:
+    container_name: horizon
+    image: bluebirdgroup/horizon:2.0.3
+    ports:
+      - "8181:8181"
+    environment:
+      PORT: 8181
+      HORIZON_PROJECT_NAME: ibb
+      HORIZON_RETHINKDB_URI: rethinkdb://rethinkdb:28015
+      HORIZON_RDB_USER: admin
+    depends_on:
+      - rethinkdb
+    links:
+      - rethinkdb
