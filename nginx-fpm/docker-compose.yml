@@ -1,0 +1,23 @@
+version: '3.0'
+services:
+  web:
+    image: nginx:stable-alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./code:/var/www/html:ro
+      - ./site:/etc/nginx/conf.d:ro
+    networks:
+      - code-network
+  php:
+    image: php:7-fpm-alpine
+    volumes:
+      - ./code:/var/www/html:ro
+      - ./php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
+    networks:
+      - code-network
+
+networks:
+  code-network:
+    driver: overlay
+
