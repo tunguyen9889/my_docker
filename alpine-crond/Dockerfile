@@ -3,7 +3,7 @@ FROM alpine:latest
 MAINTAINER Tu A. Nguyen <mr.anhtu9889@gmail.com>
 
 RUN \
-  apk add --no-cache curl tzdata \
+  apk add --update --virtual --no-cache curl tzdata \
   && cp /usr/share/zoneinfo/Asia/Ho_Chi_Minh /etc/localtime \
   && apk del tzdata \
   && rm -rf /var/cache/apk/*

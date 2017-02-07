@@ -6,7 +6,7 @@ ENV FLASK_APP $APP_HOME/server.py
 EXPOSE 5000
 
 RUN \
-  apk add --update --no-cache wget tar openjdk7-jre py-setuptools alpine-sdk python-dev py-pip libtool \
+  apk add --virtual --update --no-cache wget tar openjdk7-jre py-setuptools alpine-sdk python-dev py-pip libtool \
   && update-ca-certificates \
   && pip install --upgrade pip \
   && rm -rf /var/cache/apk/*
