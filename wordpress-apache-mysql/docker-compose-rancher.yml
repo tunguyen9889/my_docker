@@ -1,0 +1,25 @@
+db:
+  image: mysql:5.7
+  volumes:
+  - "/var/lib/wordpress/.data/db:/var/lib/mysql"
+  restart: always
+  tty: true
+  stdin_open: true
+  environment:
+    MYSQL_ROOT_PASSWORD:
+    MYSQL_DATABASE:
+    MYSQL_USER:
+    MYSQL_PASSWORD:
+
+wordpress:
+  image: wordpress
+  volumes:
+  - "/var/lib/wordpress/wp_html:/var/www/html"
+  ports:
+  - "8000:80"
+  restart: always
+  tty: true
+  stdin_open: true
+  environment:
+    WORDPRESS_DB_HOST: db:3306
+    WORDPRESS_DB_PASSWORD:

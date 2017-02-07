@@ -1,25 +1,34 @@
-db:
-  image: mysql:5.7
-  volumes:
-  - "/var/lib/wordpress/.data/db:/var/lib/mysql"
-  restart: always
-  tty: true
-  stdin_open: true
-  environment:
-    MYSQL_ROOT_PASSWORD:
-    MYSQL_DATABASE:
-    MYSQL_USER:
-    MYSQL_PASSWORD:
+version: '3'
+services:
+  db:
+    image: mysql:5.7
+    networks:
+      - backend
+    volumes:
+      - ./wordpress/db:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 'P@ssw0rd'
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: 'P@ssw0rd'
+  wordpress:
+    depends_on:
+      - db
+    image: wordpress:latest
+    networks:
+      - backend
+      - frontend
+    volumes:
+      - ./wordpress/wp_html:/var/www/html
+    ports:
+      - "8000:80"
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_PASSWORD: 'P@ssw0rd'
 
-wordpress:
-  image: wordpress
-  volumes:
-  - "/var/lib/wordpress/wp_html:/var/www/html"
-  ports:
-  - "8000:80"
-  restart: always
-  tty: true
-  stdin_open: true
-  environment:
-    WORDPRESS_DB_HOST: db:3306
-    WORDPRESS_DB_PASSWORD:
+networks:
+  frontend:
+    driver: overlay
+  backend:
+    driver: overlay
+    #    internal: true
