@@ -7,11 +7,11 @@ RUN \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
   curl \
   dnsutils \
+  netcat \
   jq \
-  python3-minimal \
-  python3-distutils \
-  && curl --insecure https://bootstrap.pypa.io/get-pip.py | python3 \
-  && pip install --no-cache-dir -U awscli \
+  python3-pip \
+  python3-setuptools \
+  && pip3 install --no-cache-dir -U awscli \
   && apt-get clean autoclean \
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/* \
