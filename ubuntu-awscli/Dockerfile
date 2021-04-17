@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:latest
 
 MAINTAINER mr.anhtu9889@gmail.com
 
@@ -9,10 +9,12 @@ RUN \
   dnsutils \
   netcat \
   jq \
-  python3-pip \
-  python3-setuptools \
-  && pip3 install --no-cache-dir -U awscli \
+  ca-certificates \
+  unzip \
+  && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
+  && unzip awscliv2.zip \
+  && ./aws/install \
   && apt-get clean autoclean \
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
-  && rm -rf /var/lib/apt/lists/* \
+  && rm -rf /var/lib/apt/lists/* awscliv2.zip /aws \
   && echo complete -C '/usr/local/bin/aws_completer' aws >> ~/.bashrc
